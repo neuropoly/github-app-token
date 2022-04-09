@@ -1,4 +1,5 @@
 import { env } from "node:process";
+import { getInput, info, setFailed, setOutput, setSecret } from "@actions/core";
 import { getOctokit } from "@actions/github";
 import { createAppAuth } from "@octokit/auth-app";
 import { request } from "@octokit/request";
