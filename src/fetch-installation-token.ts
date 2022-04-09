@@ -16,6 +16,8 @@ export const fetchInstallationToken = async ({
   privateKey: string;
   repo: string;
 }>): Promise<string> => {
+  info("env.GITHUB_API_URL = " + env.GITHUB_API_URL);
+  info("calling createAppAuth()");
   const app = createAppAuth({
     appId,
     privateKey,
@@ -25,15 +27,20 @@ export const fetchInstallationToken = async ({
       baseUrl: env.GITHUB_API_URL,
     }),
   });
+  info("Got app back: " + app);
 
   if (installationId === undefined) {
+    info("call app() with type app");
     const authApp = await app({ type: "app" });
+    info("call getOctokit()");
     const octokit = getOctokit(authApp.token);
+    info("call getRepoInstallation(" + owner + "," + repo + ")");
     ({
       data: { id: installationId },
     } = await octokit.rest.apps.getRepoInstallation({ owner, repo }));
   }
 
+  info("call app() again, with " + installationId)
   const installation = await app({ installationId, type: "installation" });
   return installation.token;
 };
